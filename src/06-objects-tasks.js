@@ -20,10 +20,15 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  const obj = {};
+  obj.width = width;
+  obj.height = height;
+  obj.getArea = function getArea() {
+    return this.width * this.height;
+  };
+  return obj;
 }
-
 
 /**
  * Returns the JSON representation of specified object
@@ -35,8 +40,8 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
 }
 
 
@@ -53,8 +58,12 @@ function getJSON(/* obj */) {
  */
 function fromJSON(/* proto, json */) {
   throw new Error('Not implemented');
+  // const obj = { ...JSON.parse(json) };
+  // obj.prototype = proto;
+  // return obj;
 }
-
+// '{ "a":10, "b":20, "c":30 }'
+// console.log(fromJSON(Array, '{ "a":10, "b":20, "c":30 }'));
 
 /**
  * Css selectors builder
