@@ -525,8 +525,17 @@ function distinct(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  return array.reduce((map, el) => {
+    if (!map.has(keySelector(el))) {
+      map.set(keySelector(el), new Array(valueSelector(el)));
+    } else {
+      const buffer = map.get(keySelector(el));
+      buffer.push(valueSelector(el));
+      map.set(keySelector(el), buffer);
+    }
+    return map;
+  }, new Map());
 }
 
 
@@ -560,8 +569,13 @@ function selectMany(arr, childrenSelector) {
  *   ['one','two','three'], [2]       => 'three'  (arr[2])
  *   [[[ 1, 2, 3]]], [ 0, 0, 1 ]      => 2        (arr[0][0][1])
  */
-function getElementByIndexes(/* arr, indexes */) {
-  throw new Error('Not implemented');
+function getElementByIndexes(arr, indexes) {
+  let el = arr.slice();
+  indexes.map((index) => {
+    el = el[index];
+    return index;
+  });
+  return el;
 }
 
 
@@ -583,8 +597,17 @@ function getElementByIndexes(/* arr, indexes */) {
  *   [ 1, 2, 3, 4, 5, 6, 7, 8 ]   =>  [ 5, 6, 7, 8, 1, 2, 3, 4 ]
  *
  */
-function swapHeadAndTail(/* arr */) {
-  throw new Error('Not implemented');
+function swapHeadAndTail(arr) {
+  if (arr.length === 1) return arr;
+  const even = arr.length % 2 === 1;
+  const axis = Math.floor(arr.length / 2);
+  let out = [];
+  if (even) {
+    out = out.concat(arr.slice(-axis), arr[axis], arr.slice(0, axis));
+  } else {
+    out = out.concat(arr.slice(-axis), arr.slice(0, axis));
+  }
+  return out;
 }
 
 
