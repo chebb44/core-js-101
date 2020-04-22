@@ -417,10 +417,20 @@ function toNaryString(num, n) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let outPath = '';
+  const pathesArr = pathes.map((el) => el.split('/')).map((item) => item.filter((el) => !/[.]/.test(el)));
+  for (let i = 0; i < pathesArr[0].length; i += 1) {
+    let flag = false;
+    for (let j = 1; j < pathesArr.length; j += 1) {
+      flag = pathesArr[0][i] === pathesArr[j][i];
+    }
+    if (flag) {
+      outPath += `${pathesArr[0][i]}/`;
+    } else return outPath;
+  }
+  return outPath;
 }
-
 
 /**
  * Returns the product of two specified matrixes.
