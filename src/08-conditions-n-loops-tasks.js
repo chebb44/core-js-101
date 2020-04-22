@@ -212,8 +212,9 @@ function findFirstSingleChar(str) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const ab = a < b ? `${a}, ${b}` : `${b}, ${a}`;
+  return `${isStartIncluded ? '[' : '('}${ab}${isEndIncluded ? ']' : ')'}`;
 }
 
 
@@ -229,8 +230,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -246,8 +247,8 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  return Number(num.toString().split('').reverse().join(''));
 }
 
 
@@ -271,8 +272,14 @@ function reverseInteger(/* num */) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  let arr = ccn.toString().split('').reverse();
+  arr = arr.map((el, i) => {
+    if ((i % 2 === 1)) {
+      return (+el * 2 > 9 ? +el * 2 - 9 : +el * 2);
+    } return +el;
+  });
+  return arr.reduce((acc, item) => acc + item, 0) % 10 === 0;
 }
 
 /**
@@ -289,8 +296,11 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const arr = num.toString().split('').map((el) => +el);
+  const sum = arr.reduce((acc, curr) => acc + +curr);
+  if (sum < 10) return sum;
+  return getDigitalRoot(sum);
 }
 
 
@@ -315,8 +325,48 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(strIn) {
+  function check(str, bracketsConfig) {
+    if (str.length % 2 === 1) return false;
+
+    const stack = [];
+    const bracketsOpen = [];
+    const bracketsClose = [];
+    const bracketsSame = [];
+
+    for (let i = 0; i < bracketsConfig.length; i += 1) {
+      if (bracketsConfig[i][0] === bracketsConfig[i][1]) {
+        bracketsSame.push(bracketsConfig[i][0]);
+      } else {
+        bracketsOpen.push(bracketsConfig[i][0]);
+        bracketsClose.push(bracketsConfig[i][1]);
+      }
+    }
+
+    for (let i = 0; i < str.length; i += 1) {
+      if (bracketsOpen.indexOf(str[i]) > -1) {
+        stack.push(str[i]);
+        // console.log('Stack pushed open bracket: ', stack);
+      }
+      if (bracketsClose.indexOf(str[i]) === bracketsOpen.indexOf(stack[stack.length - 1])
+        && bracketsOpen.indexOf(stack[stack.length - 1]) > -1
+        && bracketsClose.indexOf(str[i]) > -1) {
+        stack.pop();
+        // console.log('Stack popped close bracket:', stack);
+      }
+      if (bracketsSame.indexOf(str[i]) > -1) {
+        if (bracketsSame.indexOf(str[i]) === bracketsSame.indexOf(stack[stack.length - 1])) {
+          stack.pop();
+          // console.log('Stack popped same bracket:', stack);
+        } else {
+          stack.push(str[i]);
+          // console.log('Stack pushed same bracket:', stack);
+        }
+      }
+    }
+    return stack.length === 0;
+  }
+  return check(strIn, [['[', ']'], ['(', ')'], ['{', '}'], ['<', '>']]);
 }
 
 
@@ -340,10 +390,20 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  const out = [];
+  let res = num;
+  let rem = res % n;
+  out.push(rem);
+  while (res > 0) {
+    res = Math.floor(res / n);
+    rem = res % n;
+    out.push(rem);
+  }
+  if (out[out.length - 1] === 0) out.pop();
+  return out.reverse().join('');
 }
-
+// console.log(toNaryString(1024, 2));
 
 /**
  * Returns the commom directory path for specified array of full filenames.
